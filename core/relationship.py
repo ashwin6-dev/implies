@@ -6,6 +6,7 @@ from core.ontology_component import OntologyComponentDecorator, OntologyComponen
 class RelationshipComponent(OntologyComponent):
     START_CONCEPT = ""
     END_CONCEPT = ""
+    ONTOLOGY_SPEC = None
 
     def __init__(self, source_node: Type[InstanceComponent], end_node: Type[InstanceComponent]):
         self._source_node = source_node
@@ -14,6 +15,7 @@ class RelationshipComponent(OntologyComponent):
 
     def __call__(self, *args, **kwargs):
         self.__class__._wrapped__init__(self, *args, **kwargs)
+        self.__class__.ONTOLOGY_SPEC.add_relationship(self)
         return self
 
     def check(self):
@@ -25,6 +27,12 @@ class RelationshipComponent(OntologyComponent):
 
         if end_instance.get_concept() != self.__class__.END_CONCEPT:
             raise AssertionError(f"End concept should be {self.__class__.END_CONCEPT}. Got {end_instance.get_concept()}")
+
+    def __eq__(self, other):
+        if not isinstance(other, RelationshipComponent):
+            return False
+
+        return self._source_node == other._source_node and self._end_node == other._end_node
 
     def _wrapped__init__(self, *args, **kwargs):
         pass

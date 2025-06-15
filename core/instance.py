@@ -4,10 +4,10 @@ from core.ontology_component import OntologyComponentDecorator, OntologyComponen
 
 
 class InstanceComponent(OntologyComponent):
-    CONCEPT_VALUE = ""
+    CONCEPT = ""
 
     def get_concept(self):
-        return self.__class__.CONCEPT_VALUE
+        return self.__class__.CONCEPT
 
 class Instance(OntologyComponentDecorator):
     def __init__(self, concept: str):
@@ -15,7 +15,7 @@ class Instance(OntologyComponentDecorator):
 
     def __call__(self, cls) -> Type[InstanceComponent]:
         new_class = type(cls.__name__, (InstanceComponent, cls), {})
-        new_class.CONCEPT_VALUE = self.concept
+        new_class.CONCEPT = self.concept
 
         new_class.__module__ = cls.__module__
         new_class.__doc__ = cls.__doc__
