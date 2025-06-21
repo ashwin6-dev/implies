@@ -1,33 +1,15 @@
-from core import instance, relationship, ontology
+from implies.core.entity import EntityType
+from implies.core.knowledge_graph import Graph
+from implies.core.relationship import RelationshipSchema
 
-spec = ontology.OntologySpec()
+G = Graph()
 
-@ontology.Ontology(spec)
-@instance.Instance("AUTHOR")
-class Dave:
-    def __init__(self):
-        self.name = "dave"
-        self.books = 10
+author = EntityType('Author')
+book = EntityType('Book')
+song = EntityType('Song')
+writes = RelationshipSchema('WRITES', author, book)
 
-@ontology.Ontology(spec)
-@instance.Instance("BOOK")
-class BookOne:
-    def __init__(self):
-        self.name = "bookone"
-        self.successful = False
-
-@ontology.Ontology(spec)
-@instance.Instance("BOOK")
-class BookTwo:
-    def __init__(self):
-        self.name = "booktwo"
-        self.successful = True
-
-@ontology.Ontology(spec)
-@relationship.Relationship("AUTHOR", "BOOK")
-class Writes:
-    def __init__(self, time):
-        self.time = time
-
-Writes(Dave, BookOne)(time=100)
-print (spec.instances, spec.relationships, spec.relationship_types)
+writes.create_relationship (
+    author.create_entity('Dave'),
+    book.create_entity('BookOne')
+)
